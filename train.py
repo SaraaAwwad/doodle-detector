@@ -23,8 +23,6 @@ from sklearn.metrics import confusion_matrix
 
 batch_size = 128
 
-num_classes = 10
-
 epochs = 40
 
 img_rows, img_cols = 28, 28
@@ -52,11 +50,14 @@ def readData():
 
     #print(mypath)
     i=0
+    classescount = 0
+
     for txt_name in txt_name_list:
         txt_path = mypath + txt_name
         x = np.load(txt_path)
         print(txt_name)
         print(i)
+        classescount += 1
         x = x.astype('float32') / 255.  ##scale images
         y = [i] * len(x)
         x = x[:slice_train]
@@ -70,14 +71,15 @@ def readData():
             ytotal = y
         i += 1
 
+    print(classescount)
     print("xshape = ", xtotal.shape)
     print("yshape = ", ytotal.shape)
     x_train, x_test, y_train, y_test = train_test_split(xtotal, ytotal, test_size=0.3, random_state=42)
     x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.2, random_state=1)
 
-    return x_train, x_val, x_test, y_train, y_val, y_test
+    return x_train, x_val, x_test, y_train, y_val, y_test, classescount
 
-def cnnOld(x_train, x_val, x_test, y_train, y_val, y_test):
+def cnnOld(x_train, x_val, x_test, y_train, y_val, y_test, classescount):
 
     if K.image_data_format() == 'channels_first':
         x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
@@ -108,9 +110,9 @@ def cnnOld(x_train, x_val, x_test, y_train, y_val, y_test):
     print(input_shape)
 
     # convert class vectors
-    y_train = keras.utils.to_categorical(y_train, num_classes)
-    y_test = keras.utils.to_categorical(y_test, num_classes)
-    y_val = keras.utils.to_categorical(y_val, num_classes)
+    y_train = keras.utils.to_categorical(y_train, classescount)
+    y_test = keras.utils.to_categorical(y_test, classescount)
+    y_val = keras.utils.to_categorical(y_val, classescount)
     #
     model = Sequential()
 
@@ -140,7 +142,7 @@ def cnnOld(x_train, x_val, x_test, y_train, y_val, y_test):
     model.add(Activation('relu'))
     BatchNormalization()
     model.add(Dropout(0.2))
-    model.add(Dense(num_classes))
+    model.add(Dense(classescount))
 
     model.add(Activation('softmax'))
 
@@ -228,7 +230,7 @@ def cnnOld(x_train, x_val, x_test, y_train, y_val, y_test):
     pass
 
 
-def lenet(x_train, x_val, x_test, y_train, y_val, y_test):
+def lenet(x_train, x_val, x_test, y_train, y_val, y_test, num_classes):
     if K.image_data_format() == 'channels_first':
         x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
         x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
@@ -339,8 +341,8 @@ def lenet(x_train, x_val, x_test, y_train, y_val, y_test):
     print(cr)
 
 def main():
-    x_train, x_val, x_test, y_train, y_val, y_test = readData()
-    lenet(x_train, x_val, x_test, y_train, y_val, y_test)
+    x_train, x_val, x_test, y_train, y_val, y_test, num_classes = readData()
+    lenet(x_train, x_val, x_test, y_train, y_val, y_test, num_classes)
 
 if __name__ == '__main__':
     main()
