@@ -7,9 +7,8 @@ https://www.youtube.com/watch?v=rzL22K5p7ts
 # Install dependencies
 1. Download the code
 2. Run ```pip install -r requirements.txt```
-1. Download the code
-2. Download simplified numpy chosen classes from https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/numpy_bitmap?pli=1 
-3. Place downloaded classes in "data/"
+3. Download simplified numpy chosen classes from https://console.cloud.google.com/storage/browser/quickdraw_dataset/full/numpy_bitmap?pli=1 
+4. Place downloaded classes in "data/"
 
 # Train & Run
 1. Run ```train.py```
