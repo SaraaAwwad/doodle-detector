@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CNN</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+	<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+	<h1 style="border-radius:5px; background-color: rgb(250, 244, 207);  margin: 0 250px; margin-top:-20px; padding-top: 10px; padding-bottom: 20px; ">Doodling recognition using <span>Convolutional Neural Networks</span></h1>
+
+		<canvas id="canvas" width="280" height="280" style="border:4px solid; float: left; margin: 70px; margin-top:200px;  margin-left: 120px; border-radius: 5px; cursor: crosshair;"></canvas>
+
+		<div id="debug" style="margin:65px; margin-top:100px; margin-left:120px;">
+			<br><br>
+			<button id="clearButton" class="clearbutton"><i class="fas fa-magic"> </i> Clear</button>
+
+		</div>
+
+		<div class="flex" style="margin-left:120px; margin-top:520px; float:left; position:absolute;">
+			<a href="#" class="bttn" style="width:280px;"><span style=" font-weight: 400; font-family: 'Open Sans', Helvetica;"> Predict </span></a>
+
+		</div>
+
+		<div >
+			<p id="result" style="color: black; margin-right:20px; font-size:35px; margin-top:300px;float:left;"></p>
+			<strong><p id="datares" style="color: black; margin-right:20px; font-size:35px; margin-top:300px;float:left;"></p></strong>
+
+		</div>
+
+
+
+		<script src="{{ url_for('static',filename='jquery.min.js') }}"></script>
+	    <script src="{{ url_for('static',filename='index.js') }}"></script>
+	    <script type="text/javascript">
+
+	   		$(".bttn").click(function(){
+	   			var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+	   			var canvasObj = document.getElementById("canvas");
+	   			var img = canvasObj.toDataURL();
+	   			$.ajax({
+	   				type: "POST",
+	   				url: $SCRIPT_ROOT + "/predict/",
+	   				data: img,
+	   				success: function(data){
+	   					$('#result').text('Predicted Sketch:');
+	   					$('#datares').text(data);
+	   				}
+	   			});
+	   		});
+
+	   </script>
+</body>
+</html>
